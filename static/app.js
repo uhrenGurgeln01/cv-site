@@ -1,5 +1,3 @@
-const profileDataElement = document.getElementById("profile-data");
-
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -53,18 +51,75 @@ function renderProjects(projects) {
         .join("");
 
       return `
-        <article class="project-card">
+        <article class="project-card" data-reveal>
           <div class="project-card__top">
-            <p class="project-card__name">${escapeHtml(project.name)}</p>
+            <div>
+              <p class="project-card__name">${escapeHtml(project.name)}</p>
+              <div class="project-card__meta">${escapeHtml(formatProjectMeta(project))}</div>
+            </div>
             <a class="project-card__link" href="${escapeHtml(project.url)}" target="_blank" rel="noreferrer">GitHub</a>
           </div>
           <p class="project-card__description">${escapeHtml(project.description)}</p>
-          <div class="project-card__meta">${escapeHtml(formatProjectMeta(project))}</div>
           <ul class="project-tags">${tags}</ul>
         </article>
       `;
     })
     .join("");
+}
+
+function revealElement(element, delay) {
+  element.style.setProperty("--reveal-delay", `${delay}ms`);
+  element.classList.add("is-visible");
+}
+
+function setupRevealAnimations() {
+  const items = Array.from(document.querySelectorAll("[data-reveal]"));
+
+  if (!items.length) {
+    return;
+  }
+
+  document.body.classList.add("motion-ready");
+
+  if (!("IntersectionObserver" in window)) {
+    items.forEach((item, index) => revealElement(item, Math.min(index * 45, 240)));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        const siblings = Array.from(
+          entry.target.parentElement?.querySelectorAll("[data-reveal]") || [],
+        );
+        const index = Math.max(0, siblings.indexOf(entry.target));
+        revealElement(entry.target, Math.min(index * 70, 280));
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.16,
+      rootMargin: "0px 0px -10% 0px",
+    },
+  );
+
+  items.forEach((item) => observer.observe(item));
+}
+
+function updateScrollProgress() {
+  const progressNode = document.getElementById("scroll-progress");
+
+  if (!progressNode) {
+    return;
+  }
+
+  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const ratio = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
+  progressNode.style.width = `${Math.min(Math.max(ratio, 0), 1) * 100}%`;
 }
 
 async function loadProjects() {
@@ -87,6 +142,8 @@ async function loadProjects() {
     if (statusNode && payload.status) {
       statusNode.textContent = payload.status;
     }
+
+    setupRevealAnimations();
   } catch (error) {
     if (statusNode) {
       statusNode.textContent =
@@ -95,41 +152,20 @@ async function loadProjects() {
   }
 }
 
-function setupTabs() {
-  const tabs = Array.from(document.querySelectorAll("[data-tab-target]"));
-  const panels = Array.from(document.querySelectorAll("[data-tab-panel]"));
+function setCurrentYear() {
+  const yearNode = document.getElementById("current-year");
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const target = tab.dataset.tabTarget;
-
-      tabs.forEach((entry) => {
-        const isActive = entry === tab;
-        entry.classList.toggle("is-active", isActive);
-        entry.setAttribute("aria-selected", String(isActive));
-      });
-
-      panels.forEach((panel) => {
-        panel.classList.toggle("is-active", panel.dataset.tabPanel === target);
-      });
-    });
-  });
-}
-
-function hydrateProfileContext() {
-  if (!profileDataElement) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(profileDataElement.textContent);
-  } catch (error) {
-    return null;
+  if (yearNode) {
+    yearNode.textContent = String(new Date().getFullYear());
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  hydrateProfileContext();
-  setupTabs();
+  setCurrentYear();
+  updateScrollProgress();
+  setupRevealAnimations();
   loadProjects();
+
+  window.addEventListener("scroll", updateScrollProgress, { passive: true });
+  window.addEventListener("resize", updateScrollProgress);
 });

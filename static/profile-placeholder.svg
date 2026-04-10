@@ -1,0 +1,9 @@
+<svg width="960" height="1100" viewBox="0 0 960 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="1100" rx="56" fill="#F8F1E6"/>
+  <circle cx="480" cy="312" r="210" fill="#F2C59A"/>
+  <circle cx="480" cy="290" r="138" fill="#16212D"/>
+  <path d="M270 886C270 748.482 381.482 637 519 637H441C578.518 637 690 748.482 690 886V942H270V886Z" fill="#0F7C77"/>
+  <circle cx="480" cy="322" r="112" fill="#FFF6EC"/>
+  <rect x="176" y="918" width="608" height="82" rx="24" fill="#FFFDF8"/>
+  <text x="480" y="969" text-anchor="middle" fill="#0D5D59" font-family="Arial, sans-serif" font-size="42" font-weight="700">PROFILBILD</text>
+</svg>

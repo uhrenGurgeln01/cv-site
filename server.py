@@ -34,7 +34,7 @@ def render_highlights() -> str:
     for item in PROFILE["highlights"]:
         blocks.append(
             """
-            <article class="highlight-card">
+            <article class="highlight-card" data-reveal>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
@@ -46,6 +46,29 @@ def render_highlights() -> str:
     return "".join(blocks)
 
 
+def render_life_path() -> str:
+    items = []
+    for position, step in enumerate(PROFILE["life_path"], start=1):
+        items.append(
+            """
+            <article class="timeline-item" data-reveal>
+              <div class="timeline-item__marker">{position:02d}</div>
+              <div class="timeline-item__content">
+                <p class="timeline-item__phase">{phase}</p>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </article>
+            """.format(
+                position=position,
+                phase=escape(step["phase"]),
+                title=escape(step["title"]),
+                text=escape(step["text"]),
+            ).strip()
+        )
+    return "".join(items)
+
+
 def render_skills() -> str:
     groups = []
     for group in PROFILE["skills"]:
@@ -54,7 +77,7 @@ def render_skills() -> str:
         )
         groups.append(
             """
-            <section class="skill-group">
+            <section class="skill-group" data-reveal>
               <div class="skill-group__header">
                 <p>{group_name}</p>
               </div>
@@ -66,6 +89,49 @@ def render_skills() -> str:
             ).strip()
         )
     return "".join(groups)
+
+
+def render_contact_items() -> str:
+    rows = []
+    for item in PROFILE["contact_items"]:
+        value = escape(item["value"])
+        if item.get("href"):
+            value_html = (
+                f'<a class="detail-row__value detail-row__value--link" '
+                f'href="{escape(item["href"])}" target="_blank" rel="noreferrer">{value}</a>'
+            )
+        else:
+            value_html = f'<span class="detail-row__value">{value}</span>'
+
+        rows.append(
+            """
+            <article class="detail-row" data-reveal>
+              <p class="detail-row__label">{label}</p>
+              {value_html}
+            </article>
+            """.format(
+                label=escape(item["label"]),
+                value_html=value_html,
+            ).strip()
+        )
+    return "".join(rows)
+
+
+def render_imprint_items() -> str:
+    rows = []
+    for item in PROFILE["imprint_items"]:
+        rows.append(
+            """
+            <article class="detail-row" data-reveal>
+              <p class="detail-row__label">{label}</p>
+              <span class="detail-row__value">{value}</span>
+            </article>
+            """.format(
+                label=escape(item["label"]),
+                value=escape(item["value"]),
+            ).strip()
+        )
+    return "".join(rows)
 
 
 def merge_project_data(projects: list[dict]) -> list[dict]:
@@ -86,6 +152,7 @@ def merge_project_data(projects: list[dict]) -> list[dict]:
                     "updated_at": project["updated_at"],
                     "language": project["language"] or curated["language"],
                     "url": project["url"],
+                    "tech": project["tech"] or curated["tech"],
                 }
             )
             index = next(
@@ -176,13 +243,15 @@ def render_projects(projects: list[dict]) -> str:
 
         cards.append(
             """
-            <article class="project-card">
+            <article class="project-card" data-reveal>
               <div class="project-card__top">
-                <p class="project-card__name">{name}</p>
+                <div>
+                  <p class="project-card__name">{name}</p>
+                  <div class="project-card__meta">{meta}</div>
+                </div>
                 <a class="project-card__link" href="{url}" target="_blank" rel="noreferrer">GitHub</a>
               </div>
               <p class="project-card__description">{description}</p>
-              <div class="project-card__meta">{meta}</div>
               <ul class="project-tags">{tags}</ul>
             </article>
             """.format(
@@ -207,12 +276,20 @@ def render_index() -> bytes:
         hero_summary=escape(PROFILE["summary"]),
         github_url=PROFILE["github_url"],
         github_handle=escape(PROFILE["github_username"]),
+        location=escape(PROFILE["location"]),
+        availability=escape(PROFILE["availability"]),
+        profile_image_src=escape(PROFILE["profile_image"]["src"]),
+        profile_image_alt=escape(PROFILE["profile_image"]["alt"]),
+        profile_image_caption=escape(PROFILE["profile_image"]["caption"]),
         focus_points_html=render_focus_points(),
         highlights_html=render_highlights(),
+        life_path_html=render_life_path(),
         skills_html=render_skills(),
         projects_html=render_projects(CURATED_PROJECTS),
         projects_status="Kuratierter Projekt-Auszug. Live-Daten werden im Hintergrund nachgeladen.",
-        profile_json=json.dumps(PROFILE, ensure_ascii=False),
+        contact_html=render_contact_items(),
+        imprint_html=render_imprint_items(),
+        imprint_note=escape(PROFILE["imprint_note"]),
     )
     return html.encode("utf-8")
 

@@ -14,104 +14,160 @@
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
+    <div class="progress-bar" aria-hidden="true">
+      <span class="progress-bar__value" id="scroll-progress"></span>
+    </div>
+
     <div class="page-shell">
       <div class="page-shell__glow page-shell__glow--left"></div>
       <div class="page-shell__glow page-shell__glow--right"></div>
 
+      <header class="topbar">
+        <a class="brand" href="#top">$hero_name</a>
+        <nav class="topnav" aria-label="Seitennavigation">
+          <a href="#profil">Profil</a>
+          <a href="#lebensweg">Lebensweg</a>
+          <a href="#skills">Skills</a>
+          <a href="#projekte">Projekte</a>
+          <a href="#kontakt">Kontakt</a>
+          <a href="#impressum">Impressum</a>
+        </nav>
+      </header>
+
       <main class="content">
-        <section class="hero">
-          <div class="hero__copy">
-            <p class="eyebrow">CV Website</p>
+        <section class="hero section-card" id="top">
+          <div class="hero__copy" data-reveal>
+            <p class="eyebrow">CV Website / Portfolio</p>
             <h1>$hero_name</h1>
             <p class="hero__headline">$hero_headline</p>
             <p class="hero__summary">$hero_summary</p>
+
+            <div class="hero__meta">
+              <div class="hero__meta-item">
+                <span class="hero__meta-label">Standort</span>
+                <span class="hero__meta-value">$location</span>
+              </div>
+              <div class="hero__meta-item">
+                <span class="hero__meta-label">Status</span>
+                <span class="hero__meta-value">$availability</span>
+              </div>
+              <div class="hero__meta-item">
+                <span class="hero__meta-label">GitHub</span>
+                <span class="hero__meta-value">@$github_handle</span>
+              </div>
+            </div>
+
+            <div class="hero__actions">
+              <a class="button button--primary" href="$github_url" target="_blank" rel="noreferrer">
+                GitHub ansehen
+              </a>
+              <a class="button button--secondary" href="#kontakt">
+                Kontaktbereich
+              </a>
+            </div>
+
+            <div class="hero__pills">
+              $focus_points_html
+            </div>
           </div>
 
-          <div class="hero__actions">
-            <a class="button button--primary" href="$github_url" target="_blank" rel="noreferrer">
-              GitHub ansehen
-            </a>
-            <a class="button button--secondary" href="#site-panels">
-              Bereiche erkunden
-            </a>
-          </div>
-
-          <div class="hero__pills">
-            $focus_points_html
+          <div class="hero__visual" data-reveal>
+            <figure class="avatar-card">
+              <div class="avatar-card__frame">
+                <img src="$profile_image_src" alt="$profile_image_alt" />
+              </div>
+              <figcaption class="avatar-card__caption">$profile_image_caption</figcaption>
+            </figure>
           </div>
         </section>
 
-        <section class="tabs-section" id="site-panels">
-          <div class="tabs" role="tablist" aria-label="CV Bereiche">
-            <button class="tab is-active" type="button" role="tab" aria-selected="true" data-tab-target="profil">
-              Profil
-            </button>
-            <button class="tab" type="button" role="tab" aria-selected="false" data-tab-target="skills">
-              Skills
-            </button>
-            <button class="tab" type="button" role="tab" aria-selected="false" data-tab-target="projekte">
-              Projekte
-            </button>
+        <section class="stack-section section-card" id="profil">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Profil</p>
+            <h2>Lean, uebersichtlich und auf professionelle Delivery ausgerichtet.</h2>
+            <p class="section-heading__text">
+              Diese Seite ist jetzt bewusst staerker vertikal aufgebaut, damit
+              dein Profil ruhiger wirkt und die Inhalte klar untereinander lesbar bleiben.
+            </p>
           </div>
 
-          <section class="panel is-active" data-tab-panel="profil">
-            <div class="panel-grid panel-grid--wide">
-              <div class="panel-card">
-                <p class="panel-card__eyebrow">Profil</p>
-                <h2>Professionell, klar, umsetzungsstark.</h2>
-                <p>
-                  Diese Seite praesentiert ein fokussiertes Profil fuer moderne Python-,
-                  API- und AI-nahe Entwicklungsarbeit mit klarer technischer Ausrichtung.
-                </p>
-              </div>
-
-              <div class="panel-card panel-card--github">
-                <p class="panel-card__eyebrow">GitHub</p>
-                <h2>Direkter Zugang zu Code und Projekten.</h2>
-                <p>
-                  Das GitHub-Profil ist direkt verlinkt. Der Projekte-Reiter zieht
-                  Repositories live nach, sobald GitHub erreichbar ist.
-                </p>
-                <a class="inline-link" href="$github_url" target="_blank" rel="noreferrer">
-                  @$github_handle
-                </a>
-              </div>
-            </div>
-
-            <div class="highlights-grid">
-              $highlights_html
-            </div>
-          </section>
-
-          <section class="panel" data-tab-panel="skills">
-            <div class="section-heading">
-              <p class="section-heading__eyebrow">Skills</p>
-              <h2>Technisches Profil mit Fokus auf Python und AI-Systeme.</h2>
-            </div>
-
-            <div class="skills-grid">
-              $skills_html
-            </div>
-          </section>
-
-          <section class="panel" data-tab-panel="projekte">
-            <div class="section-heading section-heading--split">
-              <div>
-                <p class="section-heading__eyebrow">Projekte</p>
-                <h2>Ausgewaehlte Arbeiten und GitHub-Repositories.</h2>
-              </div>
-              <p class="section-heading__text" id="projects-status">$projects_status</p>
-            </div>
-
-            <div class="projects-grid" id="projects-grid">
-              $projects_html
-            </div>
-          </section>
+          <div class="highlights-list">
+            $highlights_html
+          </div>
         </section>
+
+        <section class="stack-section section-card" id="lebensweg">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Lebensweg</p>
+            <h2>Ein genereller Weg von technischem Interesse hin zu modernen Python-Systemen.</h2>
+            <p class="section-heading__text">
+              Als klare, professionelle Timeline gedacht. Die Formulierungen kannst du spaeter
+              leicht auf deine echte Biografie zuschneiden.
+            </p>
+          </div>
+
+          <div class="timeline">
+            $life_path_html
+          </div>
+        </section>
+
+        <section class="stack-section section-card" id="skills">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Skills</p>
+            <h2>Technisches Profil mit Fokus auf Python, APIs und AI-Workflows.</h2>
+          </div>
+
+          <div class="skills-stack">
+            $skills_html
+          </div>
+        </section>
+
+        <section class="stack-section section-card" id="projekte">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Projekte</p>
+            <h2>Ausgewaehlte Arbeiten und GitHub-Repositories.</h2>
+            <p class="section-heading__text" id="projects-status">$projects_status</p>
+          </div>
+
+          <div class="projects-stack" id="projects-grid">
+            $projects_html
+          </div>
+        </section>
+
+        <section class="stack-section section-card" id="kontakt">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Kontakt</p>
+            <h2>Direkter Einstieg fuer Anfragen, Projekte und professionelle Zusammenarbeit.</h2>
+            <p class="section-heading__text">
+              GitHub ist sofort verlinkt. Weitere Kontaktangaben kannst du direkt
+              in den Profildaten vervollstaendigen.
+            </p>
+          </div>
+
+          <div class="detail-list">
+            $contact_html
+          </div>
+        </section>
+
+        <section class="stack-section section-card" id="impressum">
+          <div class="section-heading" data-reveal>
+            <p class="section-heading__eyebrow">Impressum</p>
+            <h2>Sauber vorbereiteter Bereich fuer die rechtlichen Pflichtangaben.</h2>
+          </div>
+
+          <div class="detail-list">
+            $imprint_html
+          </div>
+
+          <p class="legal-note" data-reveal>$imprint_note</p>
+        </section>
+
+        <footer class="footer" data-reveal>
+          <p>© <span id="current-year"></span> $hero_name. Portfolio und CV Website.</p>
+        </footer>
       </main>
     </div>
 
-    <script id="profile-data" type="application/json">$profile_json</script>
     <script src="/static/app.js" defer></script>
   </body>
 </html>
